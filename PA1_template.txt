@@ -1,0 +1,129 @@
+# Reproducible Research: Peer Assessment 1
+#Load the data (i.e. read.csv())
+## Loading and preprocessing the data
+echo = TRUE
+
+d <-  read.csv('activity.csv')
+
+
+## What is mean total number of steps taken per day?
+
+
+```r
+aggregate(steps ~ date, d, sum)
+```
+
+```
+## Error: object 'd' not found
+```
+
+```r
+ mean(hist[['steps']])
+```
+
+```
+## Error: object of type 'closure' is not subsettable
+```
+
+```r
+#> [1] 10766.19
+ median(hist[['steps']])
+```
+
+```
+## Error: object of type 'closure' is not subsettable
+```
+
+## What is the average daily activity pattern?
+
+```r
+ts <- aggregate(steps ~ interval, d, mean)
+```
+
+```
+## Error: object 'd' not found
+```
+
+```r
+plot(ts, type='l')
+```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2.png) 
+
+```r
+which.max(ts$steps)
+```
+
+```
+## Error: object of type 'closure' is not subsettable
+```
+
+```r
+#[1] 104
+ ts[104,]
+```
+
+```
+## Error: object of type 'closure' is not subsettable
+```
+
+## Imputing missing values
+
+
+```r
+ok <- complete.cases(d)
+```
+
+```
+## Error: object 'd' not found
+```
+
+```r
+ sum(!ok)
+```
+
+```
+## Error: object 'ok' not found
+```
+
+```r
+#[1] 2304
+
+for (i in 1:length(d$steps)) {
+    if (is.na(d$steps[i])) { 
+        date <- d$interval[i]
+        d$steps[i] <- ts[date] #use interval mean 
+    }
+}
+```
+
+```
+## Error: object 'd' not found
+```
+
+```r
+hist2 <- aggregate(steps ~ date, d, sum)
+```
+
+```
+## Error: object 'd' not found
+```
+
+```r
+mean(hist2['steps'])
+```
+
+```
+## Error: object 'hist2' not found
+```
+
+```r
+median(hist2['steps'])
+```
+
+```
+## Error: object 'hist2' not found
+```
+
+## Are there differences in activity patterns between weekdays and weekends?
+there is something different

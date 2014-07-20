@@ -1,40 +1,93 @@
 # Reproducible Research: Peer Assessment 1
-#Load the data (i.e. read.csv())
+
+Activity analysis for Coursera's Reproducible Reseach: Peer Assessment 1.
+
 ## Loading and preprocessing the data
-echo = TRUE
-read.csv('activity.csv')
+Data was stored in csv file. Let's load it and have an overview.
+
+```{r}
+activity_data <-  read.csv('activity.csv')
+summary(activity_data)
+```
 
 
 ## What is mean total number of steps taken per day?
-aggregate(steps ~ date, d, sum)
+To calculate this value, first, we need calculate number of steps per each day.
+Function **aggregate** breaks data into groups.
+We will group **steps** variable into groups with the same date (**date** column).
+For each group we will apply **sum** function to calculate total steps taken each day.
+```{r}
+sum_helper <- function(data) {
+    sum(data, na.rm=TRUE)
+}
+steps_per_day <- aggregate(steps ~ date, activity_data, sum_helper)
+barplot(steps_per_day$steps, names.arg=steps_per_day$date)
 
- mean(hist[['steps']])
-[1] 10766.19
-> median(hist[['steps']])
+```
+
+Calculate mean of steps per day:
+```{r}
+mean(steps_per_day[['steps']])
+```
+Calculate median of steps per day:
+```{r}
+median(steps_per_day[['steps']])
+```
 
 ## What is the average daily activity pattern?
-ts <- aggregate(steps ~ interval, d, mean)
-plot(ts, type='l')
-which.max(ts$steps)
-[1] 104
-> ts[104,]
+Let's see how average day looks like. Group **steps** into **interval** accross 
+all the days and calculate mean on each group. The **aggregate** function to the resque!
+```{r}
+mean_helper <- function(data) {
+    mean(data, na.rm=TRUE)
+}
+avg_daily_activity <- aggregate(steps ~ interval, activity_data, mean_helper)
+plot(avg_daily_activity, type='l', main='Average Daily Activity', col='red')
+```
 
+Find interval which on average contains maximum number of steps:
+```{r}
+avg_daily_activity[which.max(avg_daily_activity$steps),]
+```
 
 ## Imputing missing values
+Until now, we ignored missing values in our input data set.
+There is :
+```{r}
+ok <- complete.cases(activity_data)
+sum(!ok)
+```
+rows with missing values.
 
-ok <- complete.cases(d)
-> sum(!ok)
-[1] 2304
 
-for (i in 1:length(d$steps)) {
-    if (is.na(d$steps[i])) { 
-        date <- d$interval[i]
-        d$steps[i] <- ts[date] #use interval mean 
+### Strategy for filling missing values
+If there is no value of steps for given row, we are going to use
+mean for this interval averaged over all the days. Those were calculated for **Daily activity pattern**.
+```{r}
+for (i in 1:length(activity_data$steps)) {
+    if (is.na(activity_data$steps[i])) { 
+        this_interval <- activity_data$interval[i]
+    #    print(this_interval)
+     #   print(avg_daily_activity$steps[this_interval / 5 + 1])
+        activity_data$steps[i] <- avg_daily_activity$steps[this_interval / 5  + 1] #use interval mean 
+        print(activity_data$steps[i])
     }
+    
 }
+ok <- complete.cases(activity_data)
+sum(!ok)
+```
 
-hist2 <- aggregate(steps ~ date, d, sum)
-mean(hist2['steps'])
-median(hist2['steps'])
+Now, analyze what is the impact of such strategy of filling missing values on mean and median
+number of steps. Let's do the same operations as previously.
+```{r}
+steps_per_day_full <- aggregate(steps ~ date, activity_data, sum)
+barplot(steps_per_day_full$steps, names.arg=steps_per_day_full$date)
+
+mean(steps_per_day_full[['steps']])
+median(steps_per_day_full[['steps']])
+```
+We shall notice that obtained values are the same as for data with missing values.
+
 ## Are there differences in activity patterns between weekdays and weekends?
-
+there is something different
