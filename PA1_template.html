@@ -326,11 +326,43 @@ barplot(steps_per_day_full$steps, names.arg=steps_per_day_full$date)
 <pre><code>## [1] 10766
 </code></pre>
 
-<p>We shall notice that obtained values are the same as for data with missing values.</p>
+<p>We shall notice that obtained mean is the same as previously.
+Our strategy of filling missing date has impact on median value. (Compare with previous value).</p>
 
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
 
-<p>there is something different</p>
+<p>To check if there is difference in activity, let&#39;s figure out which dates are weekdays and which are
+weekends.</p>
+
+<pre><code class="r">is_weekday &lt;- function(date_as_string) {
+    day &lt;- as.POSIXlt(as.character(date_as_string))$wday
+
+    if (day == 0 | day == 6) {
+        return(&#39;weekend&#39;)
+    } else {
+      return(&#39;weekday&#39;)
+    }
+}
+
+all_activity_data$day &lt;- is_weekday(all_activity_data$date)
+</code></pre>
+
+<pre><code>## Warning: warunek posiada długość &gt; 1 i tylko pierwszy element będzie użyty
+</code></pre>
+
+<p>Create activity patterns for weekday and weekends:</p>
+
+<pre><code class="r">weekday_activity &lt;- aggregate(steps ~ interval, all_activity_data[all_activity_data$day == &#39;weekday&#39;], mean)
+</code></pre>
+
+<pre><code>## Error: undefined columns selected
+</code></pre>
+
+<pre><code class="r">weekend_activity &lt;- aggregate(steps ~ interval, all_activity_data[all_activity_data$day == &#39;weekend&#39;], mean)
+</code></pre>
+
+<pre><code>## Error: nie znaleziono obiektu &#39;steps&#39;
+</code></pre>
 
 </body>
 

@@ -162,7 +162,45 @@ median(steps_per_day_full[['steps']])
 ```
 ## [1] 10766
 ```
-We shall notice that obtained values are the same as for data with missing values.
+We shall notice that obtained mean is the same as previously.
+Our strategy of filling missing date has impact on median value. (Compare with previous value).
 
 ## Are there differences in activity patterns between weekdays and weekends?
-there is something different
+To check if there is difference in activity, let's figure out which dates are weekdays and which are
+weekends.
+
+```r
+is_weekday <- function(date_as_string) {
+    day <- as.POSIXlt(as.character(date_as_string))$wday
+   
+    if (day == 0 | day == 6) {
+        return('weekend')
+    } else {
+      return('weekday')
+    }
+}
+
+all_activity_data$day <- is_weekday(all_activity_data$date)
+```
+
+```
+## Warning: warunek posiada d³ugoœæ > 1 i tylko pierwszy element bêdzie u¿yty
+```
+
+Create activity patterns for weekday and weekends:
+
+```r
+weekday_activity <- aggregate(steps ~ interval, all_activity_data[all_activity_data$day == 'weekday'], mean)
+```
+
+```
+## Error: undefined columns selected
+```
+
+```r
+weekend_activity <- aggregate(steps ~ interval, all_activity_data[all_activity_data$day == 'weekend'], mean)
+```
+
+```
+## Error: nie znaleziono obiektu 'steps'
+```
