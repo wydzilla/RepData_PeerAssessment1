@@ -1,20 +1,40 @@
 # Reproducible Research: Peer Assessment 1
-
-
+#Load the data (i.e. read.csv())
 ## Loading and preprocessing the data
-
+echo = TRUE
+read.csv('activity.csv')
 
 
 ## What is mean total number of steps taken per day?
+aggregate(steps ~ date, d, sum)
 
-
+ mean(hist[['steps']])
+[1] 10766.19
+> median(hist[['steps']])
 
 ## What is the average daily activity pattern?
-
+ts <- aggregate(steps ~ interval, d, mean)
+plot(ts, type='l')
+which.max(ts$steps)
+[1] 104
+> ts[104,]
 
 
 ## Imputing missing values
 
+ok <- complete.cases(d)
+> sum(!ok)
+[1] 2304
 
+for (i in 1:length(d$steps)) {
+    if (is.na(d$steps[i])) { 
+        date <- d$interval[i]
+        d$steps[i] <- ts[date] #use interval mean 
+    }
+}
 
+hist2 <- aggregate(steps ~ date, d, sum)
+mean(hist2['steps'])
+median(hist2['steps'])
 ## Are there differences in activity patterns between weekdays and weekends?
+
